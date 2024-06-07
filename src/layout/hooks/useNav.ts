@@ -14,10 +14,15 @@ import { useGlobal, isAllEmpty } from "@pureadmin/utils";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 import ExitFullscreen from "@iconify-icons/ri/fullscreen-exit-fill";
 import Fullscreen from "@iconify-icons/ri/fullscreen-fill";
+import { removeToken } from "@/utils/auth";
+import { resetRouter } from "@/router";
+import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
+import { routerArrays } from "@/layout/types";
 
 const errorInfo =
   "The current routing configuration is incorrect, please check the configuration";
 
+/** 导航栏相关逻辑 */
 export function useNav() {
   const route = useRoute();
   const pureApp = useAppStoreHook();
@@ -37,18 +42,20 @@ export function useNav() {
     };
   });
 
-  /** 头像（如果头像为空则使用 src/assets/user.jpg ） */
-  const userAvatar = computed(() => {
-    return isAllEmpty(useUserStoreHook()?.avatar)
-      ? Avatar
-      : useUserStoreHook()?.avatar;
-  });
+  /** 头像（如果头像为空则使用 src/assets/user.jpg ）,这里AG去掉了 */
+  // const userAvatar = computed(() => {
+  //   return isAllEmpty(useUserStoreHook()?.avatar)
+  //     ? Avatar
+  //     : useUserStoreHook()?.avatar;
+  // });
 
   /** 昵称（如果昵称为空则显示用户名） */
   const username = computed(() => {
-    return isAllEmpty(useUserStoreHook()?.nickname)
-      ? useUserStoreHook()?.username
-      : useUserStoreHook()?.nickname;
+    // return isAllEmpty(useUserStoreHook()?.nickname)
+    //   ? useUserStoreHook()?.username
+    //   : useUserStoreHook()?.nickname;
+    //AG修改:
+    return useUserStoreHook()?.username;
   });
 
   const avatarsStyle = computed(() => {
@@ -78,10 +85,20 @@ export function useNav() {
     if (Title) document.title = `${meta.title} | ${Title}`;
     else document.title = meta.title;
   }
-
   /** 退出登录 */
   function logout() {
-    useUserStoreHook().logOut();
+    // useUserStoreHook().logOut();//原本的
+    // AG修改:
+    useUserStoreHook().SET_USERNAME("");
+    useUserStoreHook().SET_ROLES([]);
+    removeToken();
+    useMultiTagsStoreHook().handleTags("equal", [...routerArrays]);
+    resetRouter();
+    router.push("/login");
+  }
+  /** AG个人中心 */
+  function userProfile() {
+    router.push("/global/user/profile");
   }
 
   function backTopMenu() {
@@ -150,7 +167,7 @@ export function useNav() {
     isCollapse,
     pureApp,
     username,
-    userAvatar,
+    // userAvatar,
     avatarsStyle,
     tooltipEffect
   };

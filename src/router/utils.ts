@@ -27,7 +27,7 @@ const IFrame = () => import("@/layout/frame.vue");
 const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}");
 
 // 动态路由
-import { getAsyncRoutes } from "@/api/routes";
+import { getAsyncRoutes } from "@/api/system/login";
 
 function handRank(routeInfo: any) {
   const { name, path, parentId, meta } = routeInfo;
@@ -178,14 +178,14 @@ function handleAsyncRoutes(routeList) {
     );
     usePermissionStoreHook().handleWholeMenus(routeList);
   }
-  if (!useMultiTagsStoreHook().getMultiTagsCache) {
-    useMultiTagsStoreHook().handleTags("equal", [
-      ...routerArrays,
-      ...usePermissionStoreHook().flatteningRoutes.filter(
-        v => v?.meta?.fixedTag
-      )
-    ]);
-  }
+  // if (!useMultiTagsStoreHook().getMultiTagsCache) {
+  //   useMultiTagsStoreHook().handleTags("equal", [
+  //     ...routerArrays
+  //     // ...usePermissionStoreHook().flatteningRoutes.filter(
+  //     //   v => v?.meta?.fixedTag
+  //     // )
+  //   ]);
+  // }
   addPathMatch();
 }
 
@@ -384,6 +384,8 @@ function getTopMenu(tag = false): menuType {
   const topMenu = handleTopMenu(
     usePermissionStoreHook().wholeMenus[0]?.children[0]
   );
+  // const topMenu = usePermissionStoreHook().wholeMenus[0]?.children[0];
+
   tag && useMultiTagsStoreHook().handleTags("push", topMenu);
   return topMenu;
 }

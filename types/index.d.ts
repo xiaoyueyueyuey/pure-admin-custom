@@ -49,6 +49,8 @@ type TimeoutHandle = ReturnType<typeof setTimeout>;
 
 type IntervalHandle = ReturnType<typeof setInterval>;
 
+
+
 type Effect = "light" | "dark";
 
 interface ChangeEvent extends Event {
@@ -80,3 +82,28 @@ function parseInt(s: string | number, radix?: number): number;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function parseFloat(string: string | number): number;
+
+// 自定义区域
+type ResponseData<T> = {
+  code: number;
+  msg: string;
+  data: T;
+};
+
+type PageDTO<T> = {
+  total: number;
+  rows: Array<T>;
+};
+
+interface BasePageQuery extends BaseQuery {
+  pageNum?: number;
+  pageSize?: number;
+}
+
+interface BaseQuery {
+  beginTime?: string;
+  endTime?: string;
+  orderColumn?: string;
+  orderDirection?: string;
+  timeRangeColumn?: string;
+}

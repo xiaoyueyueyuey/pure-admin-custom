@@ -1,5 +1,5 @@
 import type { RouteRecordName } from "vue-router";
-
+import { DictionaryData } from "@/api/system/dictionary";
 export type cacheType = {
   mode: string;
   name?: RouteRecordName;
@@ -37,10 +37,17 @@ export type setType = {
 };
 
 export type userType = {
-  avatar?: string;
+  // avatar?: string;
+  // username?: string;
+  // nickname?: string;
+  // roles?: Array<string>;
+  // isRemembered?: boolean;
+  // loginDay?: number;
+  //用AG的，到时需要自定义的时候再改
   username?: string;
-  nickname?: string;
   roles?: Array<string>;
-  isRemembered?: boolean;
-  loginDay?: number;
+  /** 字典ListMap 用于下拉框直接展示 */
+  dictionaryList: Map<String, Array<DictionaryData>>;
+  /** 字典MapMap 用于匹配值展示 */
+  dictionaryMap: Record<string, Record<string, DictionaryData>>;
 };

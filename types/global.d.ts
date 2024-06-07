@@ -70,6 +70,10 @@ declare global {
     VITE_CDN: boolean;
     VITE_HIDE_HOME: string;
     VITE_COMPRESSION: ViteCompression;
+    // 自定义变量
+    VITE_APP_BASE_API: string;
+    VITE_APP_TITLE: string;
+    VITE_SERVE: string;
   }
 
   /**

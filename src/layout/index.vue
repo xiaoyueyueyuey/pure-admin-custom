@@ -59,7 +59,6 @@ const set: setType = reactive({
       mobile: set.device === "mobile"
     };
   }),
-
   hideTabs: computed(() => {
     return $storage?.configure.hideTabs;
   })

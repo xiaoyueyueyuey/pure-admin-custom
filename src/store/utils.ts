@@ -25,4 +25,4 @@ export type {
   multiType,
   cacheType,
   positionType
-} from "./types";
+} from "./modules/types";

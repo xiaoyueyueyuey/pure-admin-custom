@@ -19,8 +19,8 @@ export const usePermissionStore = defineStore({
     constantMenus,
     // 整体路由生成的菜单（静态、动态）
     wholeMenus: [],
-    // 整体路由（一维数组格式）
-    flatteningRoutes: [],
+    // 整体路由（一维数组格式） TODOAG这里好像没用到，到时再研究
+    // flatteningRoutes: [],
     // 缓存页面keepAlive
     cachePageList: []
   }),
@@ -30,9 +30,9 @@ export const usePermissionStore = defineStore({
       this.wholeMenus = filterNoPermissionTree(
         filterTree(ascending(this.constantMenus.concat(routes)))
       );
-      this.flatteningRoutes = formatFlatteningRoutes(
-        this.constantMenus.concat(routes)
-      );
+      // this.flatteningRoutes = formatFlatteningRoutes(
+      //   this.constantMenus.concat(routes)
+      // );
     },
     cacheOperate({ mode, name }: cacheType) {
       const delIndex = this.cachePageList.findIndex(v => v === name);

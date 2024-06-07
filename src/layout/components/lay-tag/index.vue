@@ -59,8 +59,8 @@ const isShowArrow = ref(false);
 const topPath = getTopMenu()?.path;
 const { VITE_HIDE_HOME } = import.meta.env;
 const fixedTags = [
-  ...routerArrays,
-  ...usePermissionStoreHook().flatteningRoutes.filter(v => v?.meta?.fixedTag)
+  ...routerArrays
+  // ...usePermissionStoreHook().flatteningRoutes.filter(v => v?.meta?.fixedTag)
 ];
 
 const dynamicTagView = async () => {

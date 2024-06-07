@@ -29,9 +29,7 @@ interface MessageParams {
   /** 关闭时的回调函数, 参数为被关闭的 `message` 实例 */
   onClose?: Function | null;
 }
-
 /** 用法非常简单，参考 src/views/components/message/index.vue 文件 */
-
 /**
  * `Message` 消息提示函数
  */

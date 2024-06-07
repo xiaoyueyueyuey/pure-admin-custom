@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "NODE_OPTIONS=--max-old-space-size=4096 vite",
-    "serve": "pnpm dev",
+    "dev": "NODE_OPTIONS=--max-old-space-size=4096 vite --open",
+    "serve": "pnpm dev ",
     "build": "rimraf dist && NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "build:staging": "rimraf dist && vite build --mode staging",
     "report": "rimraf dist && vite build",
@@ -55,11 +55,17 @@
     "@vueuse/motion": "^2.1.0",
     "animate.css": "^4.1.1",
     "axios": "^1.7.2",
+
+    "cropperjs": "^1.5.13",
+    "crypto-js": "^4.1.1",
+
     "dayjs": "^1.11.11",
     "echarts": "^5.5.0",
     "element-plus": "^2.7.3",
     "js-cookie": "^3.0.5",
     "localforage": "^1.10.0",
+    "jsencrypt": "^3.3.2",
+
     "mitt": "^3.0.1",
     "nprogress": "^0.2.0",
     "path": "^0.12.7",
@@ -68,10 +74,15 @@
     "qs": "^6.12.1",
     "responsive-storage": "^2.2.0",
     "sortablejs": "^1.15.2",
+    "typeit": "^8.7.1",
     "vue": "^3.4.27",
     "vue-router": "^4.3.2",
     "vue-tippy": "^6.4.1",
-    "vue-types": "^5.1.2"
+    "vue-types": "^5.1.2",
+    "xlsx": "^0.18.5",
+    "qrcode": "^1.5.3"
+
+
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",

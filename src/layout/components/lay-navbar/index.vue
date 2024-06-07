@@ -17,7 +17,7 @@ const {
   onPanel,
   pureApp,
   username,
-  userAvatar,
+  // userAvatar,
   avatarsStyle,
   toggleSideBar
 } = useNav();

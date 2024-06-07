@@ -109,7 +109,6 @@ html.dark {
       pointer-events: all !important;
       background-image: initial !important;
     }
-
     & .el-message__closeBtn {
       &:hover {
         color: rgb(255 255 255 / 85%);
@@ -117,7 +116,6 @@ html.dark {
       }
     }
   }
-
   /* 自定义菜单搜索样式 */
   .pure-search-dialog {
     .el-dialog__footer {

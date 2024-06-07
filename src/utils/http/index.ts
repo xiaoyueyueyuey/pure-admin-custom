@@ -11,9 +11,10 @@ import type {
 } from "./types.d";
 import { stringify } from "qs";
 import NProgress from "../progress";
-import { getToken, formatToken } from "@/utils/auth";
+import { getToken, formatToken, getUnRepeatableToken } from "@/utils/auth";
 import { useUserStoreHook } from "@/store/modules/user";
-
+import { downloadByData } from "@pureadmin/utils";
+const { VITE_APP_BASE_API } = import.meta.env;
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
   // 请求超时时间
@@ -23,6 +24,9 @@ const defaultConfig: AxiosRequestConfig = {
     "Content-Type": "application/json",
     "X-Requested-With": "XMLHttpRequest"
   },
+  // 请求前缀,每次都要带上，用于代理
+  baseURL: VITE_APP_BASE_API,
+
   // 数组格式参数序列化（https://github.com/axios/axios/issues/5142）
   paramsSerializer: {
     serialize: stringify as unknown as CustomParamsSerializer
@@ -52,6 +56,7 @@ class PureHttp {
     return new Promise(resolve => {
       PureHttp.requests.push((token: string) => {
         config.headers["Authorization"] = formatToken(token);
+        config.headers["REQUEST-TOKEN"] = getUnRepeatableToken();
         resolve(config);
       });
     });
@@ -73,40 +78,55 @@ class PureHttp {
           return config;
         }
         /** 请求白名单，放置一些不需要`token`的接口（通过设置请求白名单，防止`token`过期后再请求造成的死循环问题） */
-        const whiteList = ["/refresh-token", "/login"];
+        const whiteList = [
+          "/refresh-token",
+          "/login",
+          "/getConfig",
+          "/captchaImage",
+          "register"
+        ];
+        console.log("路由路径：", config.url);
+
         return whiteList.some(url => config.url.endsWith(url))
           ? config
           : new Promise(resolve => {
               const data = getToken();
-              if (data) {
-                const now = new Date().getTime();
-                const expired = parseInt(data.expires) - now <= 0;
-                if (expired) {
-                  if (!PureHttp.isRefreshing) {
-                    PureHttp.isRefreshing = true;
-                    // token过期刷新
-                    useUserStoreHook()
-                      .handRefreshToken({ refreshToken: data.refreshToken })
-                      .then(res => {
-                        const token = res.data.accessToken;
-                        config.headers["Authorization"] = formatToken(token);
-                        PureHttp.requests.forEach(cb => cb(token));
-                        PureHttp.requests = [];
-                      })
-                      .finally(() => {
-                        PureHttp.isRefreshing = false;
-                      });
-                  }
-                  resolve(PureHttp.retryOriginalRequest(config));
-                } else {
-                  config.headers["Authorization"] = formatToken(
-                    data.accessToken
-                  );
-                  resolve(config);
-                }
-              } else {
-                resolve(config);
-              }
+              // 我这里不使用refreshToken，所以不需要这段逻辑，如果你需要refreshToken，可以参考原作者这段逻辑
+              // if (data) {// token存在
+              //   const now = new Date().getTime();
+              //   const expired = parseInt(data.expires) - now <= 0;
+              //   if (expired) {// token过期
+              //     if (!PureHttp.isRefreshing) {
+              //       PureHttp.isRefreshing = true;
+              //       // token过期刷新
+              //       useUserStoreHook()
+              //         .handRefreshToken({ refreshToken: data.refreshToken })
+              //         .then(res => {
+              //           const token = res.data.accessToken;
+              //           config.headers["Authorization"] = formatToken(token);
+              //           config.headers["REQUEST-TOKEN"] =
+              //             PureHttp.unRepeatableToken;
+              //           PureHttp.requests.forEach(cb => cb(token));
+              //           PureHttp.requests = [];
+              //         })
+              //         .finally(() => {
+              //           PureHttp.isRefreshing = false;
+              //         });
+              //     }
+              //     resolve(PureHttp.retryOriginalRequest(config));
+              //   } else {
+              //     config.headers["Authorization"] = formatToken(
+              //       data.accessToken
+              //     );
+              //     config.headers["REQUEST-TOKEN"] =
+              //               PureHttp.unRepeatableToken;
+
+              //     resolve(config);
+              //   }
+              // }
+              config.headers["Authorization"] = formatToken(data.token);
+              config.headers["REQUEST-TOKEN"] = getUnRepeatableToken();
+              resolve(config);
             });
       },
       error => {
@@ -188,6 +208,18 @@ class PureHttp {
     config?: PureHttpRequestConfig
   ): Promise<T> {
     return this.request<T>("get", url, params, config);
+  }
+  public download(
+    url: string,
+    fileName: string,
+    params?: AxiosRequestConfig
+  ): void {
+    this.get(url, params, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      responseType: "blob"
+    }).then((data: Blob) => {
+      downloadByData(data, fileName);
+    });
   }
 }
 

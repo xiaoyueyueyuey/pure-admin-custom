@@ -12,13 +12,10 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   isActive: false
 });
-
 const { tooltipEffect } = useNav();
-
 const iconClass = computed(() => {
   return ["w-[16px]", "h-[16px]"];
 });
-
 const { $storage } = useGlobal<GlobalPropertiesApi>();
 const themeColor = computed(() => $storage.layout?.themeColor);
 
